@@ -73,8 +73,8 @@ A modern, AI-powered expense tracking web application built with Next.js 15, fea
 1. **Clone the repository**
 
    ```bash
-   git clone https://github.com/sahandghavidel/next-expense-tracker-ai.git
-   cd next-expense-tracker-ai
+   git clone https://github.com/Oliad12/ai-powered-expense-tracker.git
+   cd ai-powered-expense-tracker
    ```
 
 2. **Install dependencies**
@@ -135,7 +135,6 @@ The application uses a simple yet effective database schema:
 - **User**: Stores user information from Clerk
 - **Record**: Stores expense transactions with categories and amounts
 
-View the complete database diagram: [Eraser Diagram](https://app.eraser.io/workspace/XhlJP6Rdmx6nrGR0SpKz?origin=share)
 
 ## 🎯 Key Features Walkthrough
 
@@ -174,14 +173,13 @@ View the complete database diagram: [Eraser Diagram](https://app.eraser.io/works
 2. **Add environment variables in Vercel dashboard**
 3. **Deploy automatically on every push to main branch**
 
-[![Deploy with Vercel](https://vercel.com/button)](https://vercel.com/new/clone?repository-url=https://github.com/sahandghavidel/next-expense-tracker-ai)
+[![Deploy with Vercel](https://vercel.com/button)](https://vercel.com/new/clone?repository-url=https://github.com/Oliad12/ai-powered-expense-tracker.git)
 
 ## 📎 Useful Links
 
 - **[Neon Database](https://get.neon.com/0pFcBSF)** - Serverless PostgreSQL
 - **[Clerk Authentication](https://go.clerk.com/WSe7K8F)** - User management
-- **[GitHub Repository](https://github.com/sahandghavidel/next-expense-tracker-ai)** - Source code
-- **[Database Diagram](https://app.eraser.io/workspace/XhlJP6Rdmx6nrGR0SpKz?origin=share)** - Visual schema
+- **[GitHub Repository](https://github.com/Oliad12/ai-powered-expense-tracker.git)** - Source code
 - **[Next.js Documentation](https://nextjs.org)** - Framework docs
 - **[Tailwind CSS](https://tailwindcss.com)** - Styling framework
 - **[Vercel Platform](https://vercel.com)** - Deployment platform
@@ -191,9 +189,9 @@ View the complete database diagram: [Eraser Diagram](https://app.eraser.io/works
 Contributions are welcome! Please feel free to submit a Pull Request.
 
 1. Fork the project
-2. Create your feature branch (`git checkout -b feature/AmazingFeature`)
-3. Commit your changes (`git commit -m 'Add some AmazingFeature'`)
-4. Push to the branch (`git push origin feature/AmazingFeature`)
+2. Create your feature branch (`git branch main`)
+3. Commit your changes (`git commit -m 'add fuunctional of expense tracker'`)
+4. Push to the branch (`git push -u origin main`)
 5. Open a Pull Request
 
 ## 📝 License
@@ -206,6 +204,6 @@ If you find this project helpful, please give it a ⭐ on GitHub!
 
 ---
 
-**Built with ❤️ by [Sahand Ghavidel](https://github.com/sahandghavidel)**
+**Built with ❤️ by [Tibebu Dereje](https://github.com/Oliad12)**
 
 _Demonstrating modern full-stack development with AI integration, completely free to build and deploy._
