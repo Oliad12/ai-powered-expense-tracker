@@ -1,12 +1,15 @@
 'use server';
+
 import { db } from '@/lib/db';
 import { auth } from '@clerk/nextjs/server';
 
-async function getUserRecord(): Promise<{
-  record?: number;
+interface UserExpenseSummary {
+  totalAmount?: number;
   daysWithRecords?: number;
   error?: string;
-}> {
+}
+
+export async function getUserExpenseSummary(): Promise<UserExpenseSummary> {
   const { userId } = await auth();
 
   if (!userId) {
@@ -14,22 +17,32 @@ async function getUserRecord(): Promise<{
   }
 
   try {
-    const records = await db.record.findMany({
+    // Fetch all expenses for the user
+    const expenses = await db.expense.findMany({
       where: { userId },
+      select: {
+        amount: true,
+        date: true
+      }
     });
 
-    const record = records.reduce((sum, record) => sum + record.amount, 0);
+    // Total spent
+    const totalAmount = expenses.reduce((sum, e) => sum + e.amount, 0);
 
-    // Count the number of days with valid sleep records
-    const daysWithRecords = records.filter(
-      (record) => record.amount > 0
-    ).length;
+    // Count unique days with expenses
+    const uniqueDays = new Set(
+      expenses.map(e => e.date.toISOString().split('T')[0])
+    );
 
-    return { record, daysWithRecords };
+    return {
+      totalAmount,
+      daysWithRecords: uniqueDays.size
+    };
+
   } catch (error) {
-    console.error('Error fetching user record:', error); // Log the error
+    console.error('Error fetching user expenses:', error);
     return { error: 'Database error' };
   }
 }
 
-export default getUserRecord;
+export default getUserExpenseSummary;

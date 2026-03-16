@@ -1,24 +1,27 @@
-import Link from 'next/link';
+import Link from "next/link";
 
 const Footer = () => {
   return (
     <footer className='relative overflow-hidden bg-gradient-to-br from-gray-50 via-white to-emerald-50 dark:from-gray-900 dark:via-gray-800 dark:to-emerald-900/20 border-t border-gray-100/50 dark:border-gray-700/50'>
       {/* Gradient accent line */}
-      <div className='absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-emerald-500 via-green-500 to-teal-500'></div>
+      <div className='absolute top-0 left-0 w-full border-t'></div>
 
       <div className='max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12'>
-        <div className='grid grid-cols-1 md:grid-cols-3 gap-8 mb-8'>
+        <div className='grid grid-cols-1 md:grid-cols-3 gap-4 sm:gap-10 mb-12'>
           {/* Logo and Tagline */}
+          
           <div className='text-center md:text-left'>
-            <div className='inline-flex items-center gap-2 mb-4'>
+            <Link href='#top'>
+            <div className='flex items-center gap-4 w-fit'>
               <div className='w-8 h-8 bg-gradient-to-br from-emerald-500 via-green-500 to-teal-500 rounded-xl flex items-center justify-center shadow-lg'>
-                <span className='text-white text-lg'>💰</span>
+                <span className='text-white text-lg cursor-pointer'>💰</span>
               </div>
               <h2 className='text-xl font-bold bg-gradient-to-r from-emerald-600 via-green-500 to-teal-500 bg-clip-text text-transparent'>
-                ExpenseTracker AI
+                ET AI
               </h2>
             </div>
-            <p className='text-gray-600 dark:text-gray-400 leading-relaxed max-w-sm'>
+            </Link>
+            <p className='text-muted-foreground mb-4 mt-4 text-medium leading-relaxed max-w-sm'>
               Intelligent financial management powered by AI. Track your
               expenses, manage your budget, and gain insights into your spending
               patterns.
@@ -26,8 +29,8 @@ const Footer = () => {
           </div>
 
           {/* Navigation Links */}
-          <div className='text-center md:text-left'>
-            <h3 className='text-lg font-semibold text-gray-900 dark:text-gray-100 mb-4'>
+          <div className='flex flex-col items-start lg:items-center md:items-center sm:px-2 px-[2%] py-3'>
+            <h3 className='text-lg font-bold mb-4 text-blue-600'>
               Quick Links
             </h3>
             <div className='flex flex-col space-y-3'>
@@ -56,8 +59,8 @@ const Footer = () => {
           </div>
 
           {/* Features */}
-          <div className='text-center md:text-left'>
-            <h3 className='text-lg font-semibold text-gray-900 dark:text-gray-100 mb-4'>
+          <div className='flex flex-col md:flex-col gap-4 sm:px-2 px-[2%] py-3'>
+            <h3 className='font-bold text-purple-400'>
               Features
             </h3>
             <div className='space-y-3'>
@@ -84,13 +87,13 @@ const Footer = () => {
         </div>
 
         {/* Divider */}
-        <div className='w-full h-px bg-gradient-to-r from-transparent via-gray-200 dark:via-gray-700 to-transparent mb-8'></div>
+        <div className='w-full h-px border-t bg-gradient-to-r from-transparent via-gray-200 dark:via-gray-700 to-transparent mb-8'></div>
 
         {/* Copyright and Social */}
         <div className='flex flex-col md:flex-row justify-between items-center'>
           <div className='text-center md:text-left mb-4 md:mb-0'>
             <p className='text-gray-500 dark:text-gray-400 text-sm'>
-              © {new Date().getFullYear()} ExpenseTracker AI. All rights
+              © {new Date().getFullYear()} ET AI. All rights
               reserved.
             </p>
           </div>
@@ -98,7 +101,7 @@ const Footer = () => {
           <div className='flex items-center gap-4'>
             <div className='inline-flex items-center gap-2 bg-emerald-50 dark:bg-emerald-900/30 text-emerald-700 dark:text-emerald-300 px-3 py-1 rounded-full text-xs font-medium'>
               <span className='w-1.5 h-1.5 bg-emerald-500 dark:bg-emerald-400 rounded-full animate-pulse'></span>
-              Made by Sahand
+              Made by Tibebu
             </div>
           </div>
         </div>

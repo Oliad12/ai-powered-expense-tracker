@@ -1,20 +1,19 @@
 import React from 'react';
-import getUserRecord from '@/app/actions/getUserRecord';
-import getBestWorstExpense from '@/app/actions/getBestWorstExpense';
+import getUserExpenseSummary from '@/app/actions/getUserRecord';
+import getBestWorstExpense from '@/app/actions/expenses/getBestWorstExpense';
 
 const ExpenseStats = async () => {
   try {
     // Fetch both average and range data
     const [userRecordResult, rangeResult] = await Promise.all([
-      getUserRecord(),
+      getUserExpenseSummary(),
       getBestWorstExpense(),
     ]);
 
-    const { record, daysWithRecords } = userRecordResult;
+    const { totalAmount, daysWithRecords } = userRecordResult;
     const { bestExpense, worstExpense } = rangeResult;
 
-    // Calculate average expense
-    const validRecord = record || 0;
+    const validRecord = totalAmount || 0;
     const validDays =
       daysWithRecords && daysWithRecords > 0 ? daysWithRecords : 1;
     const averageExpense = validRecord / validDays;
@@ -43,7 +42,7 @@ const ExpenseStats = async () => {
                 Average Daily Spending
               </p>
               <div className='text-2xl sm:text-3xl font-bold text-gray-900 dark:text-gray-100 mb-2'>
-                ${averageExpense.toFixed(2)}
+                ETB {averageExpense.toFixed(2)}
               </div>
               <div className='inline-flex items-center gap-2 bg-emerald-50 dark:bg-emerald-900/30 text-emerald-700 dark:text-emerald-300 px-2 py-1 rounded-full text-xs font-medium'>
                 <span className='w-1.5 h-1.5 bg-emerald-500 dark:bg-emerald-400 rounded-full'></span>

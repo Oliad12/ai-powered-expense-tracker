@@ -1,43 +1,36 @@
 'use client';
 import { useState } from 'react';
-import { Record } from '@/types/Record';
-import deleteRecord from '@/app/actions/deleteRecord';
+import { Expense } from '@/types/Expense';
+import deleteRecord from '@/app/actions/expenses/deleteExpense';
 
-// Helper function to get category emoji
 const getCategoryEmoji = (category: string) => {
   switch (category) {
-    case 'Food':
-      return '🍔';
-    case 'Transportation':
-      return '🚗';
-    case 'Shopping':
-      return '🛒';
-    case 'Entertainment':
-      return '🎬';
-    case 'Bills':
-      return '💡';
-    case 'Healthcare':
-      return '🏥';
-    default:
-      return '📦';
+    case 'Food': return '🍔';
+    case 'Transportation': return '🚗';
+    case 'Shopping': return '🛒';
+    case 'Entertainment': return '🎬';
+    case 'Bills': return '💡';
+    case 'Healthcare': return '🏥';
+    default: return '📦';
   }
 };
 
-const RecordItem = ({ record }: { record: Record }) => {
+const RecordItem = ({ record }: { record: Expense }) => {
   const [isLoading, setIsLoading] = useState(false);
 
   const handleDeleteRecord = async (recordId: string) => {
-    setIsLoading(true); // Show loading spinner
-    await deleteRecord(recordId); // Perform delete operation
-    setIsLoading(false); // Hide loading spinner
+    setIsLoading(true);
+    await deleteRecord(recordId);
+    setIsLoading(false);
   };
 
-  // Determine border color based on expense amount
   const getBorderColor = (amount: number) => {
-    if (amount > 100) return 'border-red-500'; // High expense
-    if (amount > 50) return 'border-yellow-500'; // Medium expense
-    return 'border-green-500'; // Low expense
+    if (amount > 100) return 'border-red-500';
+    if (amount > 50) return 'border-yellow-500';
+    return 'border-green-500';
   };
+
+  const categoryName = record.category?.name ?? record.categoryId;
 
   return (
     <li
@@ -83,22 +76,22 @@ const RecordItem = ({ record }: { record: Record }) => {
               {new Date(record?.date).toLocaleDateString()}
             </span>
             <span className='text-lg sm:text-xl font-bold text-gray-900 dark:text-gray-100'>
-              ${record?.amount.toFixed(2)}
+              ETB {record?.amount.toFixed(2)}
             </span>
           </div>
 
           <div className='flex items-center gap-2'>
             <span className='text-base sm:text-lg'>
-              {getCategoryEmoji(record?.category)}
+              {getCategoryEmoji(categoryName)}
             </span>
             <span className='text-sm font-medium text-gray-700 dark:text-gray-300'>
-              {record?.category}
+              {categoryName}
             </span>
           </div>
         </div>
 
         <div className='text-xs sm:text-sm text-gray-600 dark:text-gray-400 mt-2'>
-          <p className='truncate break-words line-clamp-2'>{record?.text}</p>
+          <p className='truncate break-words line-clamp-2'>{record?.description}</p>
         </div>
       </div>
     </li>

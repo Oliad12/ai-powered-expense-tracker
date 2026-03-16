@@ -2,6 +2,17 @@ import { currentUser } from '@clerk/nextjs/server';
 
 import { db } from './db';
 
+const DEFAULT_CATEGORIES = [
+  { name: 'Food & Dining', icon: '🍔', color: '#10b981' },
+  { name: 'Transportation', icon: '🚗', color: '#3b82f6' },
+  { name: 'Shopping', icon: '🛒', color: '#f59e0b' },
+  { name: 'Entertainment', icon: '🎬', color: '#8b5cf6' },
+  { name: 'Bills & Utilities', icon: '💡', color: '#ef4444' },
+  { name: 'Healthcare', icon: '🏥', color: '#06b6d4' },
+  { name: 'Education', icon: '📚', color: '#f97316' },
+  { name: 'Other', icon: '📦', color: '#6b7280' },
+];
+
 export const checkUser = async () => {
   const user = await currentUser();
 
@@ -16,6 +27,14 @@ export const checkUser = async () => {
   });
 
   if (loggedInUser) {
+    // Seed default categories if user has none
+    const count = await db.category.count({ where: { userId: user.id } });
+    if (count === 0) {
+      await db.category.createMany({
+        data: DEFAULT_CATEGORIES.map((c) => ({ ...c, userId: user.id })),
+        skipDuplicates: true,
+      });
+    }
     return loggedInUser;
   }
 
@@ -26,6 +45,15 @@ export const checkUser = async () => {
       imageUrl: user.imageUrl,
       email: user.emailAddresses[0]?.emailAddress,
     },
+  });
+
+  // Seed default categories for new user
+  await db.category.createMany({
+    data: DEFAULT_CATEGORIES.map((c) => ({
+      ...c,
+      userId: user.id,
+    })),
+    skipDuplicates: true,
   });
 
   return newUser;

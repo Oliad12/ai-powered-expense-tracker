@@ -1,7 +1,7 @@
 'use client';
 
 import { useState, useEffect } from 'react';
-import { getAIInsights } from '@/app/actions/getAIInsights';
+import { getAIInsights, refreshAIInsights } from '@/app/actions/getAIInsights';
 import { generateInsightAnswer } from '@/app/actions/generateInsightAnswer';
 
 interface InsightData {
@@ -33,17 +33,28 @@ const AIInsights = () => {
       setLastUpdated(new Date());
     } catch (error) {
       console.error('❌ AIInsights: Failed to load AI insights:', error);
-      // Fallback to mock data if AI fails
       setInsights([
         {
           id: 'fallback-1',
           type: 'info',
           title: 'AI Temporarily Unavailable',
-          message:
-            "We're working to restore AI insights. Please check back soon.",
+          message: "We're working to restore AI insights. Please check back soon.",
           action: 'Try again later',
         },
       ]);
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+  const handleRefresh = async () => {
+    setIsLoading(true);
+    try {
+      const newInsights = await refreshAIInsights();
+      setInsights(newInsights);
+      setLastUpdated(new Date());
+    } catch (error) {
+      console.error('❌ AIInsights: Failed to refresh AI insights:', error);
     } finally {
       setIsLoading(false);
     }
@@ -244,9 +255,10 @@ const AIInsights = () => {
             </span>
           </div>
           <button
-            onClick={loadInsights}
+            onClick={handleRefresh}
             className='w-7 h-7 sm:w-8 sm:h-8 bg-gradient-to-r from-emerald-600 via-green-500 to-teal-500 hover:from-emerald-700 hover:via-green-600 hover:to-teal-600 text-white rounded-xl flex items-center justify-center shadow-lg hover:shadow-xl transition-all duration-200'
             disabled={isLoading}
+            title='Force regenerate insights'
           >
             <span className='text-sm'>🔄</span>
           </button>
@@ -362,7 +374,7 @@ const AIInsights = () => {
             <span className='font-medium text-xs'>Powered by AI analysis</span>
           </div>
           <button
-            onClick={loadInsights}
+            onClick={handleRefresh}
             className='px-3 py-1.5 bg-gradient-to-r from-emerald-600 via-green-500 to-teal-500 hover:from-emerald-700 hover:via-green-600 hover:to-teal-600 text-white rounded-lg font-medium text-xs shadow-lg hover:shadow-xl transition-all duration-200'
           >
             <span className='sm:hidden'>Refresh</span>

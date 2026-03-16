@@ -15,7 +15,7 @@ export async function generateInsightAnswer(question: string): Promise<string> {
     const thirtyDaysAgo = new Date();
     thirtyDaysAgo.setDate(thirtyDaysAgo.getDate() - 30);
 
-    const expenses = await db.record.findMany({
+    const expenses = await db.expense.findMany({
       where: {
         userId: user.clerkUserId,
         createdAt: {
@@ -25,16 +25,16 @@ export async function generateInsightAnswer(question: string): Promise<string> {
       orderBy: {
         createdAt: 'desc',
       },
-      take: 50, // Limit to recent 50 expenses for analysis
+      take: 50,
+      include: { category: true },
     });
 
-    // Convert to format expected by AI
     const expenseData: ExpenseRecord[] = expenses.map((expense) => ({
       id: expense.id,
       amount: expense.amount,
-      category: expense.category || 'Other',
-      description: expense.text,
-      date: expense.createdAt.toISOString(),
+      category: expense.category?.name || 'Other',
+      description: expense.description || '',
+      date: expense.date.toISOString(),
     }));
 
     // Generate AI answer
