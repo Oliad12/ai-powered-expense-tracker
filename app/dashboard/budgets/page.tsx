@@ -66,8 +66,18 @@ export default async function BudgetsPage() {
           <div className='bg-white dark:bg-gray-900 rounded-2xl p-4 border border-gray-100 dark:border-gray-800 shadow-sm'>
             <p className='text-xs text-gray-500 dark:text-gray-400 mb-1'>Remaining</p>
             <p className='text-xl font-bold text-emerald-600 dark:text-emerald-400'>
-              ETB {Math.max(totalLimit - totalSpent, 0).toFixed(2)}
+              ETB {totalRemaining.toFixed(2)}
             </p>
+          </div>
+          <div className='bg-white dark:bg-gray-900 rounded-2xl p-4 border border-gray-100 dark:border-gray-800 shadow-sm'>
+            <p className='text-xs text-gray-500 dark:text-gray-400 mb-1'>Overall Usage</p>
+            <p className='text-xl font-bold text-gray-900 dark:text-gray-100'>{overallPct}%</p>
+            <div className='w-full h-2 bg-gray-100 dark:bg-gray-800 rounded-full overflow-hidden mt-2'>
+              <div
+                className={`h-full rounded-full ${overallPct >= 100 ? 'bg-red-500' : overallPct >= 70 ? 'bg-yellow-500' : 'bg-emerald-500'}`}
+                style={{ width: `${overallPct}%` }}
+              />
+            </div>
           </div>
         </div>
       )}

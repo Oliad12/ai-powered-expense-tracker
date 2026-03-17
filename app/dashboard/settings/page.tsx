@@ -1,5 +1,7 @@
 import { currentUser } from '@clerk/nextjs/server';
 import { redirect } from 'next/navigation';
+import Image from "next/image";
+
 
 export default async function SettingsPage() {
   const user = await currentUser();
@@ -17,7 +19,7 @@ export default async function SettingsPage() {
         <div className='bg-white dark:bg-gray-900 rounded-2xl p-5 border border-gray-100 dark:border-gray-800 shadow-sm'>
           <h3 className='text-base font-bold text-gray-900 dark:text-gray-100 mb-4'>Profile</h3>
           <div className='flex items-center gap-4 mb-4'>
-            <img src={user.imageUrl} alt='Profile' className='w-14 h-14 rounded-2xl border-2 border-gray-100 dark:border-gray-700 shadow-sm' />
+            <Image src={user.imageUrl} alt='Profile' className='w-14 h-14 rounded-2xl border-2 border-gray-100 dark:border-gray-700 shadow-sm' />
             <div>
               <p className='font-semibold text-gray-900 dark:text-gray-100'>{user.firstName} {user.lastName}</p>
               <p className='text-sm text-gray-500 dark:text-gray-400'>{user.emailAddresses[0]?.emailAddress}</p>
