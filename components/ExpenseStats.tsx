@@ -66,7 +66,7 @@ const ExpenseStats = async () => {
                     Highest
                   </h4>
                   <p className='text-lg font-bold text-red-600 dark:text-red-300'>
-                    {bestExpense !== undefined ? `$${bestExpense}` : 'No data'}
+                    {bestExpense !== undefined ? `ETB ${bestExpense}` : 'No data'}
                   </p>
                 </div>
               </div>
@@ -86,7 +86,7 @@ const ExpenseStats = async () => {
                   </h4>
                   <p className='text-lg font-bold text-green-600 dark:text-green-300'>
                     {worstExpense !== undefined
-                      ? `$${worstExpense}`
+                      ? `ETB ${worstExpense}`
                       : 'No data'}
                   </p>
                 </div>

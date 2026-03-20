@@ -85,8 +85,9 @@ const RecordChart = async () => {
       <div className='overflow-x-auto'>
         <BarChart
           records={records.map((record) => ({
-            ...record,
             date: String(record.date),
+            amount: record.amount,
+            category: record.category?.name ?? 'Uncategorized',
           }))}
         />
       </div>

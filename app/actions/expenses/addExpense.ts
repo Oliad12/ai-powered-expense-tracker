@@ -2,6 +2,7 @@
 import { auth } from '@clerk/nextjs/server';
 import { db } from '@/lib/db';
 import { revalidatePath } from 'next/cache';
+import { sendBudgetWarningEmail, sendLargeExpenseEmail } from '@/lib/sendEmail';
 
 interface RecordData {
   description?: string;
@@ -68,6 +69,63 @@ async function addExpense(formData: FormData): Promise<RecordResult> {
     };
 
     revalidatePath('/dashboard');
+
+    // --- Email notifications (non-blocking) ---
+    try {
+      const user = await db.user.findUnique({ where: { clerkUserId: userId } });
+      if (user?.email) {
+        const now = new Date();
+        const month = now.getMonth() + 1;
+        const year = now.getFullYear();
+        const startOfMonth = new Date(year, now.getMonth(), 1);
+        const endOfMonth = new Date(year, now.getMonth() + 1, 0, 23, 59, 59);
+
+        // Check budgets
+        const budgets = await db.budget.findMany({
+          where: { userId, month, year },
+          include: { category: true },
+        });
+        const monthExpenses = await db.expense.findMany({
+          where: { userId, date: { gte: startOfMonth, lte: endOfMonth } },
+          select: { amount: true, categoryId: true },
+        });
+
+        for (const budget of budgets) {
+          const spent = budget.categoryId
+            ? monthExpenses.filter((e) => e.categoryId === budget.categoryId).reduce((s, e) => s + e.amount, 0)
+            : monthExpenses.reduce((s, e) => s + e.amount, 0);
+          const pct = budget.limit > 0 ? Math.round((spent / budget.limit) * 100) : 0;
+
+          if (pct >= 80) {
+            await sendBudgetWarningEmail({
+              to: user.email,
+              name: user.name ?? 'there',
+              budgetName: budget.name,
+              pct,
+              spent,
+              limit: budget.limit,
+            });
+          }
+        }
+
+        // Check large expense (2× above monthly average)
+        const category = await db.category.findUnique({ where: { id: categoryId } });
+        if (monthExpenses.length > 1) {
+          const avg = monthExpenses.reduce((s, e) => s + e.amount, 0) / monthExpenses.length;
+          if (amount >= avg * 2 && amount >= 100) {
+            await sendLargeExpenseEmail({
+              to: user.email,
+              name: user.name ?? 'there',
+              amount,
+              category: category?.name ?? 'Uncategorized',
+              description,
+            });
+          }
+        }
+      }
+    } catch (emailErr) {
+      console.error('Email notification error:', emailErr);
+    }
 
     return { data: recordData };
   } catch (error) {

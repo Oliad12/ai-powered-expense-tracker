@@ -2,10 +2,12 @@
 
 import { db } from '@/lib/db'
 import { auth } from '@clerk/nextjs/server'
-import { Expense } from '@prisma/client'
+import { Prisma } from '@prisma/client'
+
+type ExpenseWithCategory = Prisma.ExpenseGetPayload<{ include: { category: true } }>
 
 interface GetExpensesResult {
-  records?: Expense[]
+  records?: ExpenseWithCategory[]
   error?: string
 }
 
