@@ -4,6 +4,8 @@ import Navbar from '@/components/Navbar';
 import Footer from '@/components/Footer';
 import Link from 'next/link';
 
+export const dynamic = 'force-dynamic';
+
 const features = [
   { icon: '🤖', title: 'AI-Powered Insights', desc: 'Get personalized spending analysis and smart recommendations powered by advanced AI to help you make better financial decisions.' },
   { icon: '📊', title: 'Visual Analytics', desc: 'Beautiful charts and graphs that turn your raw expense data into clear, actionable visual stories about your spending habits.' },
