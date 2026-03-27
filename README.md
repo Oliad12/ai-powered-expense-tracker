@@ -104,6 +104,9 @@ A modern, AI-powered expense tracking web application built with Next.js 15, fea
    # OpenRouter AI
    OPENROUTER_API_KEY="your-openrouter-api-key"
 
+   # Resend Email
+   RESEND_API_KEY="your-resend-api-key"
+
    # App URL
    NEXT_PUBLIC_APP_URL="http://localhost:3000"
    ```

@@ -1,7 +1,7 @@
 import { Resend } from 'resend';
 
 const resend = new Resend(process.env.RESEND_API_KEY);
-const FROM = 'ET AI Tracker <notifications@resend.com>';
+const FROM = 'ET AI Tracker <onboarding@resend.dev>';
 
 export async function sendBudgetWarningEmail({
   to, name, budgetName, pct, spent, limit,

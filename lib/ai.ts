@@ -1,4 +1,5 @@
 import OpenAI from 'openai';
+import type { ChatCompletion } from 'openai/resources/chat/completions';
 
 interface RawInsight {
   type?: string;
@@ -16,6 +17,31 @@ const openai = new OpenAI({
     'X-Title': 'ExpenseTracker AI',
   },
 });
+
+const MODELS = [
+  'deepseek/deepseek-chat-v3-0324:free',
+  'deepseek/deepseek-chat:free',
+  'meta-llama/llama-3.3-8b-instruct:free',
+];
+
+type ChatParams = Parameters<typeof openai.chat.completions.create>[0];
+
+async function chatWithFallback(params: Omit<ChatParams, 'model'>): Promise<ChatCompletion> {
+  for (const model of MODELS) {
+    try {
+      const result = await openai.chat.completions.create({ ...params, model, stream: false } as ChatParams);
+      return result as ChatCompletion;
+    } catch (err: unknown) {
+      const status = (err as { status?: number })?.status;
+      if (status === 404 || status === 429) {
+        console.warn(`Model ${model} unavailable (${status}), trying next...`);
+        continue;
+      }
+      throw err;
+    }
+  }
+  throw new Error('All AI models unavailable');
+}
 
 export interface ExpenseRecord {
   id: string;
@@ -67,8 +93,7 @@ export async function generateExpenseInsights(
 
     Return only valid JSON array, no additional text.`;
 
-    const completion = await openai.chat.completions.create({
-      model: 'deepseek/deepseek-chat-v3-0324:free',
+    const completion = await chatWithFallback({
       messages: [
         {
           role: 'system',
@@ -135,44 +160,59 @@ export async function generateExpenseInsights(
   }
 }
 
-export async function categorizeExpense(description: string): Promise<string> {
+export async function categorizeExpense(description: string, userCategories: string[]): Promise<string> {
+  const categoryList = userCategories.length > 0
+    ? userCategories
+    : ['Food & Dining', 'Transportation', 'Shopping', 'Entertainment', 'Bills & Utilities', 'Healthcare', 'Education', 'Other'];
+
+  const fallback = categoryList[categoryList.length - 1] ?? 'Other';
+  const desc = description.toLowerCase();
+
+  // Local keyword map — checked before hitting the AI
+  const keywordMap: Record<string, string[]> = {
+    'Food & Dining':     ['coffee', 'cafe', 'restaurant', 'food', 'lunch', 'dinner', 'breakfast', 'pizza', 'burger', 'tea', 'snack', 'meal', 'eat', 'drink', 'juice', 'bakery', 'sushi', 'sandwich', 'grocery', 'supermarket'],
+    'Transportation':    ['uber', 'taxi', 'bus', 'train', 'fuel', 'gas', 'petrol', 'parking', 'metro', 'flight', 'airline', 'ticket', 'toll', 'lyft', 'ride', 'car wash'],
+    'Shopping':          ['amazon', 'clothes', 'shirt', 'shoes', 'mall', 'store', 'shop', 'purchase', 'buy', 'market', 'fashion', 'dress', 'pants'],
+    'Entertainment':     ['netflix', 'spotify', 'cinema', 'movie', 'game', 'concert', 'show', 'theater', 'youtube', 'subscription', 'streaming'],
+    'Bills & Utilities': ['electricity', 'water', 'internet', 'phone', 'bill', 'utility', 'rent', 'insurance', 'wifi', 'mobile', 'broadband'],
+    'Healthcare':        ['doctor', 'hospital', 'pharmacy', 'medicine', 'clinic', 'dental', 'health', 'drug', 'prescription', 'medical'],
+    'Education':         ['book', 'course', 'school', 'university', 'tuition', 'class', 'training', 'study', 'exam', 'library'],
+  };
+
+  // Find best local match against user's actual category names
+  for (const [keyword, terms] of Object.entries(keywordMap)) {
+    if (terms.some((t) => desc.includes(t))) {
+      // Find the user category that best matches this keyword group
+      const match = categoryList.find((c) =>
+        c.toLowerCase().includes(keyword.split(' ')[0].toLowerCase())
+      );
+      if (match) return match;
+    }
+  }
+
+  // Fall back to AI for ambiguous descriptions
   try {
-    const completion = await openai.chat.completions.create({
-      model: 'deepseek/deepseek-chat-v3-0324:free',
+    const completion = await chatWithFallback({
       messages: [
         {
           role: 'system',
-          content:
-            'You are an expense categorization AI. Categorize expenses into one of these categories: Food, Transportation, Entertainment, Shopping, Bills, Healthcare, Other. Respond with only the category name.',
+          content: `You are an expense categorization AI. You MUST pick EXACTLY one category from this list: ${categoryList.join(', ')}. Respond with only the category name, nothing else.`,
         },
         {
           role: 'user',
-          content: `Categorize this expense: "${description}"`,
+          content: `Which category fits this expense: "${description}"? Reply with only the category name.`,
         },
       ],
-      temperature: 0.1,
+      temperature: 0,
       max_tokens: 20,
     });
 
-    const category = completion.choices[0].message.content?.trim();
-
-    const validCategories = [
-      'Food',
-      'Transportation',
-      'Entertainment',
-      'Shopping',
-      'Bills',
-      'Healthcare',
-      'Other',
-    ];
-
-    const finalCategory = validCategories.includes(category || '')
-      ? category!
-      : 'Other';
-    return finalCategory;
+    const raw = completion.choices[0].message.content?.trim() ?? '';
+    const match = categoryList.find((c) => c.toLowerCase() === raw.toLowerCase());
+    return match ?? fallback;
   } catch (error) {
     console.error('❌ Error categorizing expense:', error);
-    return 'Other';
+    return fallback;
   }
 }
 
@@ -201,8 +241,7 @@ export async function generateAIAnswer(
     
     Return only the answer text, no additional formatting.`;
 
-    const completion = await openai.chat.completions.create({
-      model: 'deepseek/deepseek-chat-v3-0324:free',
+    const completion = await chatWithFallback({
       messages: [
         {
           role: 'system',

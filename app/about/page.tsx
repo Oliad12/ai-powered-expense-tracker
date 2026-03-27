@@ -119,23 +119,17 @@ export default function AboutPage() {
       </section>
 
       {/* Tech Stack */}
-      <section className='py-16 sm:py-20 px-4'>
-        <div className='max-w-4xl mx-auto text-center'>
-          <div className='inline-flex items-center gap-2 bg-emerald-50 dark:bg-emerald-900/30 text-emerald-700 dark:text-emerald-300 px-3 py-1 rounded-full text-sm font-medium mb-6'>
-            <span className='w-1.5 h-1.5 bg-emerald-500 rounded-full'></span>
-            Tech Stack
-          </div>
-          <h2 className='text-3xl sm:text-4xl font-bold text-gray-900 dark:text-gray-100 mb-4'>
-            Built with modern tools
-          </h2>
-          <p className='text-gray-500 dark:text-gray-400 mb-10'>A carefully chosen stack for performance, reliability, and developer experience.</p>
-          <div className='flex flex-wrap justify-center gap-3'>
-            {stack.map((t) => (
-              <span key={t.name} className={`px-4 py-2 rounded-full text-sm font-semibold ${t.color}`}>{t.name}</span>
+      <section className='py-16 px-4'>
+        <div className='max-w-3xl mx-auto text-center'>
+          <h2 className='text-2xl font-bold text-gray-900 dark:text-gray-100 mb-6'>Built with</h2>
+          <div className='flex flex-wrap justify-center gap-2'>
+            {stack.map((s) => (
+              <span key={s.name} className={`px-3 py-1.5 rounded-full text-sm font-medium ${s.color}`}>{s.name}</span>
             ))}
           </div>
         </div>
       </section>
+
       <section className='py-24 px-4 bg-gradient-to-br from-emerald-600/20 via-green-700/10 to-teal-900/10'>
         <div className='max-w-2xl mx-auto text-center'>
           <h2 className='text-3xl sm:text-4xl font-bold text-bold mb-4'>Ready to take control?</h2>
