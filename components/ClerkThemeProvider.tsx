@@ -15,6 +15,7 @@ export default function ClerkThemeProvider({
 
   return (
     <ClerkProvider
+      publishableKey={process.env.NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY || 'pk_test_build_placeholder'}
       appearance={{
         baseTheme: theme === 'dark' ? dark : undefined,
         variables: {
