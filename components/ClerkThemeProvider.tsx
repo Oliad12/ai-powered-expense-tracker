@@ -12,10 +12,16 @@ export default function ClerkThemeProvider({
   children,
 }: ClerkThemeProviderProps) {
   const { theme } = useTheme();
+  const publishableKey = process.env.NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY;
+
+  // During build without a real key, skip ClerkProvider
+  if (!publishableKey || publishableKey.includes('placeholder')) {
+    return <>{children}</>;
+  }
 
   return (
     <ClerkProvider
-      publishableKey={process.env.NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY || 'pk_test_build_placeholder'}
+      publishableKey={publishableKey}
       appearance={{
         baseTheme: theme === 'dark' ? dark : undefined,
         variables: {
