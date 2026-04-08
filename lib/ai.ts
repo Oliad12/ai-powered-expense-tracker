@@ -27,20 +27,35 @@ const MODELS = [
 type ChatParams = Parameters<typeof openai.chat.completions.create>[0];
 
 async function chatWithFallback(params: Omit<ChatParams, 'model'>): Promise<ChatCompletion> {
+  const apiKey = process.env.OPENROUTER_API_KEY || process.env.OPENAI_API_KEY;
+  if (!apiKey || apiKey === 'placeholder') {
+    throw new Error('OPENROUTER_API_KEY is not configured');
+  }
+
+  // Re-create client with current env var (not build-time placeholder)
+  const client = new OpenAI({
+    baseURL: 'https://openrouter.ai/api/v1',
+    apiKey,
+    defaultHeaders: {
+      'HTTP-Referer': process.env.NEXT_PUBLIC_APP_URL || 'http://localhost:3000',
+      'X-Title': 'ExpenseTracker AI',
+    },
+  });
+
+  let lastError: unknown;
   for (const model of MODELS) {
     try {
-      const result = await openai.chat.completions.create({ ...params, model, stream: false } as ChatParams);
+      const result = await client.chat.completions.create({ ...params, model, stream: false } as ChatParams);
       return result as ChatCompletion;
     } catch (err: unknown) {
+      lastError = err;
       const status = (err as { status?: number })?.status;
-      if (status === 404 || status === 429) {
-        console.warn(`Model ${model} unavailable (${status}), trying next...`);
-        continue;
-      }
-      throw err;
+      console.warn(`Model ${model} failed (status: ${status}):`, (err as Error)?.message);
+      if (status === 401) throw err;
+      continue;
     }
   }
-  throw new Error('All AI models unavailable');
+  throw lastError ?? new Error('All AI models unavailable');
 }
 
 export interface ExpenseRecord {

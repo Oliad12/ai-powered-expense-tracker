@@ -8,7 +8,7 @@ import AIInsights from '@/components/AIInsights';
 import RecordHistory from '@/components/RecordHistory';
 
 function CardSkeleton() {
-  return <div className='bg-white dark:bg-gray-900 rounded-2xl p-5 border border-gray-100 dark:border-gray-800 animate-pulse h-28' />;
+  return <div className='bg-white dark:bg-gray-900 rounded-2xl p-5 border border-gray-100 dark:border-gray-800 animate-pulse h-28'/>;
 }
 
 export default async function DashboardPage() {
@@ -42,12 +42,12 @@ export default async function DashboardPage() {
       {/* Charts */}
       <div className='grid grid-cols-1 lg:grid-cols-3 gap-4 sm:gap-6'>
         <div className='lg:col-span-2'>
-          <Suspense fallback={<div className='bg-white dark:bg-gray-900 rounded-2xl border border-gray-100 dark:border-gray-800 animate-pulse h-72' />}>
+          <Suspense fallback={<div className='bg-white dark:bg-gray-900 rounded-2xl border border-gray-100 dark:border-gray-800 animate-pulse h-72'/>}>
             <RecordChart />
           </Suspense>
         </div>
         <div>
-          <Suspense fallback={<div className='bg-white dark:bg-gray-900 rounded-2xl border border-gray-100 dark:border-gray-800 animate-pulse h-72' />}>
+          <Suspense fallback={<div className='bg-white dark:bg-gray-900 rounded-2xl border border-gray-100 dark:border-gray-800 animate-pulse h-72'/>}>
             <CategoryPieChart />
           </Suspense>
         </div>
@@ -57,7 +57,7 @@ export default async function DashboardPage() {
       <AIInsights />
 
       {/* Recent Transactions */}
-      <Suspense fallback={<div className='bg-white dark:bg-gray-900 rounded-2xl border border-gray-100 dark:border-gray-800 animate-pulse h-48' />}>
+      <Suspense fallback={<div className='bg-white dark:bg-gray-900 rounded-2xl border border-gray-100 dark:border-gray-800 animate-pulse h-48'/>}>
         <RecordHistory />
       </Suspense>
     </div>
