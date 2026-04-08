@@ -19,9 +19,10 @@ const openai = new OpenAI({
 });
 
 const MODELS = [
-  'deepseek/deepseek-chat-v3-0324:free',
-  'deepseek/deepseek-chat:free',
-  'meta-llama/llama-3.3-8b-instruct:free',
+  'openai/gpt-oss-20b:free',
+  'openai/gpt-oss-120b:free',
+  'stepfun/step-3.5-flash:free',
+  'google/gemma-4-27b-it:free',
 ];
 
 type ChatParams = Parameters<typeof openai.chat.completions.create>[0];
@@ -106,6 +107,7 @@ export async function generateExpenseInsights(
     3. Money-saving opportunities
     4. Positive reinforcement for good habits
 
+    IMPORTANT: Always use ETB as the currency symbol (e.g. ETB 500), never use $.
     Return only valid JSON array, no additional text.`;
 
     const completion = await chatWithFallback({
@@ -113,7 +115,7 @@ export async function generateExpenseInsights(
         {
           role: 'system',
           content:
-            'You are a financial advisor AI that analyzes spending patterns and provides actionable insights. Always respond with valid JSON only.',
+            'You are a financial advisor AI that analyzes spending patterns and provides actionable insights. Always respond with valid JSON only. Always use ETB (Ethiopian Birr) as the currency symbol, never use $.',
         },
         {
           role: 'user',
@@ -192,6 +194,7 @@ export async function categorizeExpense(description: string, userCategories: str
     'Bills & Utilities': ['electricity', 'water', 'internet', 'phone', 'bill', 'utility', 'rent', 'insurance', 'wifi', 'mobile', 'broadband'],
     'Healthcare':        ['doctor', 'hospital', 'pharmacy', 'medicine', 'clinic', 'dental', 'health', 'drug', 'prescription', 'medical'],
     'Education':         ['book', 'course', 'school', 'university', 'tuition', 'class', 'training', 'study', 'exam', 'library'],
+    'Other':             [''],
   };
 
   // Find best local match against user's actual category names
@@ -261,7 +264,7 @@ export async function generateAIAnswer(
         {
           role: 'system',
           content:
-            'You are a helpful financial advisor AI that provides specific, actionable answers based on expense data. Be concise but thorough.',
+            'You are a helpful financial advisor AI that provides specific, actionable answers based on expense data. Be concise but thorough. Always use ETB (Ethiopian Birr) as the currency symbol, never use $.',
         },
         {
           role: 'user',
