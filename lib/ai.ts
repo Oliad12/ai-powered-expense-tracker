@@ -9,15 +9,6 @@ interface RawInsight {
   confidence?: number;
 }
 
-const openai = new OpenAI({
-  baseURL: 'https://openrouter.ai/api/v1',
-  apiKey: process.env.OPENROUTER_API_KEY || process.env.OPENAI_API_KEY || 'placeholder',
-  defaultHeaders: {
-    'HTTP-Referer': process.env.NEXT_PUBLIC_APP_URL || 'http://localhost:3000',
-    'X-Title': 'ExpenseTracker AI',
-  },
-});
-
 const MODELS = [
   'openai/gpt-oss-20b:free',
   'openai/gpt-oss-120b:free',
@@ -25,7 +16,7 @@ const MODELS = [
   'google/gemma-4-27b-it:free',
 ];
 
-type ChatParams = Parameters<typeof openai.chat.completions.create>[0];
+type ChatParams = Parameters<InstanceType<typeof OpenAI>['chat']['completions']['create']>[0];
 
 async function chatWithFallback(params: Omit<ChatParams, 'model'>): Promise<ChatCompletion> {
   const apiKey = process.env.OPENROUTER_API_KEY || process.env.OPENAI_API_KEY;
