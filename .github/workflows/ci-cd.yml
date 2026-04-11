@@ -37,10 +37,11 @@ jobs:
         run: npm ci
 
       - name: Run Lint
-        run: npx eslint . --ext .ts,.tsx --max-warnings 0 | true
+        run: npm run lint
 
       - name: Type Check
         run: npm run type-check
+
       - name: Run Tests
         run: npm test
 
@@ -66,8 +67,7 @@ jobs:
 
       - name: Install Dependencies
         run: npm ci
-      - name: Generate Prisma Client
-        run: npx prisma generate
+
       - name: Build Next.js Project
         run: npm run build
         env:
